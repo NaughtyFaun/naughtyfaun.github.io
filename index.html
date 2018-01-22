@@ -1,122 +1,145 @@
-<html>
-<head>
-    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.js"></script>
-    <script type="text/javascript" language="javascript" src="https://threejs.org/examples/js/loaders/FBXLoader.js"></script>
-</head>
-<body>
-    <div id="mycontainer" style="position: fixed;bottom: 0;width: 100%;"></div>
-    
-    
-    <script>
-        var container, stats, controls; 
-        var camera, scene, renderer, light;
-        
-        var clock = new THREE.Clock();
-        
-        var mixers = [];
-        
-        init();
-        
-        function init() {
-        
-            container = document.querySelector('#mycontainer');
-            //container = document.createElement( 'div' ); document.body.appendChild( container );
-        
-            camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-        
-            scene = new THREE.Scene();
-        
-            // g// rid
-        //     var gridHelper = new THREE.GridHelper( 28, 28, 0x303030, 0x303030 ); gridHelper.position.set( 0, - 0.04, 0 ); scene.add( gridHelper );
-        
-            // stats     //
-            // stats = new Stats(); container.appendChild( stats.dom );
-        
-            // model 
-            var manager = new THREE.LoadingManager(); manager.onProgress = function( item, loaded, total ) {
-                console.log( item, loaded, total );
-            };
-        
-            var onProgress = function( xhr ) {
-                if ( xhr.lengthComputable ) {
-                    var percentComplete = xhr.loaded / xhr.total * 100; console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
-                }
-        
-            };
-        
-            var onError = function( xhr ) {
-                console.error( xhr );
-            };
-        
-            //var loader = new THREE.FBXLoader( manager ); loader.load( "https://github.com/NaughtyFaun/models/blob/master/cube.fbx?raw=true", function( object ) {
-        var loader = new THREE.FBXLoader( manager ); loader.load( "./cube.fbx", function( object ) {
-                //object.mixer = new THREE.AnimationMixer( object ); 
-                //mixers.push( object.mixer );
-        
-                //var action = object.mixer.clipAction( object.animations[ 0 ] ); action.play();
-        
-                scene.add( object );
-        
-            }, onProgress, onError );
-        
-            // loader.load( 'models/fbx/nurbs.fbx', function( object ) {
-            //
-            //     scene.add( object );
-            //
-            // }, onProgress, onError );
-        
-            renderer = new THREE.WebGLRenderer(); renderer.setPixelRatio( window.devicePixelRatio ); renderer.setSize( window.innerWidth, window.innerHeight );
-            container.appendChild( renderer.domElement );
-        
-            // controls, camera controls = new THREE.OrbitControls( camera, renderer.domElement ); controls.target.set( 0, 12, 0 ); camera.position.set( 2, 18, 28 );
-            // controls.update();
-        
-            // window.addEventListener( 'resize', onWindowResize, false );
-        
-            light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0); light.position.set(0, 1, 0); scene.add(light);
-        
-            light = new THREE.DirectionalLight(0xffffff, 1.0); light.position.set(0, 1, 0); scene.add(light);
-        
-            animate();
-        
-        }
-        
-        // function onWindowResize() {
-        //
-        //     camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
-        //
-        //     renderer.setSize( window.innerWidth, window.innerHeight );
-        //
-        // }
-        
-        //
-        
-        function animate() {
-        
-            requestAnimationFrame( animate );
-        
-            // if ( mixers.length > 0 ) {
-//
-//                 for ( var i = 0; i < mixers.length; i ++ ) {
-//
-//                     mixers[i].update( clock.getDelta() );
-//
-//                 }
-//
-//             }
-        
-            // stats.update();
-        
-            render();
-        
-        }
-        
-        function render() {
-        
-            renderer.render( scene, camera );
-        
-        }
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - collada</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background:#777;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+			}
 
-    </script>
-</body>
+			#info {
+				position: absolute;
+				top: 0px;
+				width: 100%;
+				color: #ffffff;
+				padding: 5px;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+			}
+
+			a {
+				color: #ffffff;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div id="container"></div>
+		<div id="info">
+			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> collada loader
+			| Elf Girl by <a href="https://sketchfab.com/yellow09" target="_blank" rel="noopener">halloween</a> is licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC Attribution</a>
+		</div>
+
+		<script src="https://threejs.org/examples/../build/three.js"></script>
+
+		<script src="https://threejs.org/examples/js/loaders/ColladaLoader.js"></script>
+		<script src="https://threejs.org/examples/js/Detector.js"></script>
+		<script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
+
+		<script>
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var container, stats, clock;
+			var camera, scene, renderer, elf;
+
+			init();
+			animate();
+
+			function init() {
+
+				container = document.getElementById( 'container' );
+
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 2000 );
+				camera.position.set( 8, 10, 8 );
+				camera.lookAt( new THREE.Vector3( 0, 3, 0 ) );
+
+				scene = new THREE.Scene();
+
+				clock = new THREE.Clock();
+
+				// loading manager
+
+				var loadingManager = new THREE.LoadingManager( function() {
+
+					scene.add( elf );
+
+				} );
+
+				// collada
+
+				var loader = new THREE.ColladaLoader( loadingManager );
+				loader.load( 'https://threejs.org/examples/models/collada/elf/elf.dae', function ( collada ) {
+
+					elf = collada.scene;
+
+				} );
+
+				//
+
+				var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
+				scene.add( ambientLight );
+
+				var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.8 );
+				directionalLight.position.set( 1, 1, 0 ).normalize();
+				scene.add( directionalLight );
+
+				//
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				//
+
+				stats = new Stats();
+				container.appendChild( stats.dom );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				render();
+				stats.update();
+
+			}
+
+			function render() {
+
+				var delta = clock.getDelta();
+
+				if ( elf !== undefined ) {
+
+					elf.rotation.z += delta * 0.5;
+
+				}
+
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+	</body>
 </html>
