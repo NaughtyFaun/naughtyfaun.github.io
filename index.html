@@ -49,7 +49,7 @@
             };
         
             //var loader = new THREE.FBXLoader( manager ); loader.load( "https://github.com/NaughtyFaun/models/blob/master/cube.fbx?raw=true", function( object ) {
-        var loader = new THREE.FBXLoader( manager ); loader.load( "https://naughty.faun.space/my-test-model.fbx", function( object ) {
+        var loader = new THREE.FBXLoader( manager ); loader.load( "https://naughtyfaun.github.io/cube.fbx", function( object ) {
                 object.mixer = new THREE.AnimationMixer( object ); mixers.push( object.mixer );
         
                 var action = object.mixer.clipAction( object.animations[ 0 ] ); action.play();
