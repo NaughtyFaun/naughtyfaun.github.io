@@ -49,10 +49,11 @@
             };
         
             //var loader = new THREE.FBXLoader( manager ); loader.load( "https://github.com/NaughtyFaun/models/blob/master/cube.fbx?raw=true", function( object ) {
-        var loader = new THREE.FBXLoader( manager ); loader.load( "https://naughtyfaun.github.io/cube.fbx", function( object ) {
-                object.mixer = new THREE.AnimationMixer( object ); mixers.push( object.mixer );
+        var loader = new THREE.FBXLoader( manager ); loader.load( "./cube.fbx", function( object ) {
+                //object.mixer = new THREE.AnimationMixer( object ); 
+                //mixers.push( object.mixer );
         
-                var action = object.mixer.clipAction( object.animations[ 0 ] ); action.play();
+                //var action = object.mixer.clipAction( object.animations[ 0 ] ); action.play();
         
                 scene.add( object );
         
@@ -94,15 +95,15 @@
         
             requestAnimationFrame( animate );
         
-            if ( mixers.length > 0 ) {
-        
-                for ( var i = 0; i < mixers.length; i ++ ) {
-        
-                    mixers[i].update( clock.getDelta() );
-        
-                }
-        
-            }
+            // if ( mixers.length > 0 ) {
+//
+//                 for ( var i = 0; i < mixers.length; i ++ ) {
+//
+//                     mixers[i].update( clock.getDelta() );
+//
+//                 }
+//
+//             }
         
             // stats.update();
         
