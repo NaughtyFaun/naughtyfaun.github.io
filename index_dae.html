@@ -77,7 +77,12 @@
 				var loader = new THREE.ColladaLoader( loadingManager );
 				loader.load( 'https://naughtyfaun.github.io/cube.dae', function ( collada ) {
 
-					elf = collada.scene;
+                    // elf = collada.scene;
+                    
+                    elf = collada.skins[0];
+                    scene.add(elf);
+                    var animation = new THREE.Animation(elf, elf.geometry.animation);
+                    animation.play();
 
 				} );
 
@@ -129,12 +134,12 @@
 			function render() {
 
 				var delta = clock.getDelta();
-
-				if ( elf !== undefined ) {
-
-					elf.rotation.z += delta * 0.5;
-
-				}
+                THREE.AnimationHandler.update(delta);
+				// if ( elf !== undefined ) {
+//
+//                     elf.rotation.z += delta * 0.5;
+//
+//                 }
 
 				renderer.render( scene, camera );
 
