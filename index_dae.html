@@ -38,7 +38,8 @@
 
 		<script src="https://threejs.org/examples/../build/three.js"></script>
 
-		<script src="https://threejs.org/examples/js/loaders/ColladaLoader.js"></script>
+		<!--<script src="https://threejs.org/examples/js/loaders/ColladaLoader.js"></script>-->
+        <script src="https://raw.githubusercontent.com/josdirksen/learning-threejs/master/libs/ColladaLoader.js"></script>
 		<script src="https://threejs.org/examples/js/Detector.js"></script>
 		<script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
 
@@ -49,10 +50,7 @@
 			var container, stats, clock;
 			var camera, scene, renderer, elf;
 
-			init();
-			animate();
-
-			function init() {
+			window.onload = function() {
 
 				container = document.getElementById( 'container' );
 
@@ -83,6 +81,8 @@
                     scene.add(elf);
                     var animation = new THREE.Animation(elf, elf.geometry.animation);
                     animation.play();
+                    
+                    animate();
 
 				} );
 
