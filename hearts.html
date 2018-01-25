@@ -283,6 +283,10 @@
             console.log("NOT domain message");
             console.log(e.data);
         }
+
+        e.source.postMessage("hi there yourself!  the secret response " +
+                           "is: rheeeeet!",
+                           e.origin);
     }
     window.addEventListener('message', receiver, false);
 
