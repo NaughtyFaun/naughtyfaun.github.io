@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3D</title>
+    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.js"></script>
+    <script type="text/javascript" language="javascript" src="OBJLoader.js"></script>
+    <style type="text/css">
+    <!-- BODY {background:none transparent;}-->
+    </style>
+</head>
+<body>
+<div id="container"></div>
+<script>
+    Math.clamp=function(a,b,c){return Math.max(b,Math.min(c,a));};
+    Math.randomBetween=function(a,b){return Math.random()*(b-a)+a;};
+
+    var AdoreMyBeautifulDeity = function()
+    {
+        var self = this;
+
+        // Set the scene size.
+        const WIDTH  = 400;
+        const HEIGHT = 300;
+
+        // Camera attributes.
+        const VIEW_ANGLE = 45;
+        const ASPECT = WIDTH / HEIGHT;
+        const NEAR = 0.1;
+        const FAR = 1000;
+
+        var container = document.querySelector('#container');
+
+        self.renderer = new THREE.WebGLRenderer({alpha: true});
+
+        self.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+        self.scene  = new THREE.Scene();
+        self.scene.add(self.camera);
+
+        self.renderer.setSize(WIDTH, HEIGHT);
+        container.appendChild(self.renderer.domElement);
+
+        // create a point light
+        var pointLight = new THREE.PointLight(0xFFFFFF);
+        pointLight.position.set(10, 50, 130);
+        self.scene.add(pointLight);
+
+        self.gnomon   = new THREE.Clock();
+
+        return this;
+    };
+
+    AdoreMyBeautifulDeity.prototype.PreyFirmamentForBlessing = function(mantra)
+    {
+        var self = this;
+
+        var objLoader = new THREE.OBJLoader();
+        objLoader.load(mantra,
+            function (object)
+            {
+                self.DeityHasHeardYou(object);
+            },
+            function (xhr)
+            {
+                console.log((xhr.loaded / xhr.total * 100) + '% fulfilment');
+            },
+            function (error)
+            {
+                console.log('An error happened');
+                console.log(error);
+            }
+        );
+    };
+
+    AdoreMyBeautifulDeity.prototype.DeityHasHeardYou = function(idol)
+    {
+        var self = this;
+
+        this.altar = [];
+        this.altar[this.altar.length] = idol;
+        this.altar[this.altar.length] = idol.clone();
+        this.altar[this.altar.length] = idol.clone();
+
+        this.materials = [];
+
+        for (var i = 0; i < this.altar.length; i++) {
+            self.materials[i] = new THREE.MeshLambertMaterial({color: 0xCC0000});
+            self.materials[i].transparent = true;
+            self.materials[i].opacity     = 0;
+
+            //hacky!
+            this.altar[i].traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.material = self.materials[i];
+                }
+            });
+
+            this.scene.add(this.altar[i]);
+        }
+
+
+        this.ritual = new SacredRitual(this);
+        this.ritual.isReady = true;
+    };
+
+    AdoreMyBeautifulDeity.prototype.IsReadyToBeGiven = function()
+    {
+        return this && this.ritual && this.ritual.isReady;
+    };
+
+
+    var SacredRitual = function(deityBlessing)
+    {
+        this.sacredConnection = deityBlessing;
+
+        this.chants = [];
+
+        var idol = this.sacredConnection.altar[0];
+
+        // scale
+        var believers = 80;
+        var startPos = new THREE.Vector3( 0, -100, -300 );
+        var endPos   = new THREE.Vector3( 0,   80, -300 );
+        var dur = Math.randomBetween(2, 2.2);
+        var del = 0;
+        idol.scale.multiplyScalar(believers * Math.randomBetween(1, 1.2));
+        this.chants[0] = new AdorationChant(idol, startPos.clone(), endPos.clone(), dur, del);
+
+        idol = this.sacredConnection.altar[1];
+        startPos = new THREE.Vector3( 50, -100, -330 );
+        endPos   = new THREE.Vector3( 50,  -20, -330 );
+        dur = Math.randomBetween(1.5, 2);
+        del = Math.randomBetween(0.2, 0.4);
+        idol.scale.multiplyScalar(believers * Math.randomBetween(0.6, 0.8));
+        this.chants[1] = new AdorationChant(idol, startPos.clone(), endPos.clone(), dur, del);
+
+        idol = this.sacredConnection.altar[2];
+        startPos = new THREE.Vector3( -50, -100, -280 );
+        endPos   = new THREE.Vector3( -50,    0, -280 );
+        dur = Math.randomBetween(1.1, 2.2);
+        del = Math.randomBetween(0.1, 0.2);
+        idol.scale.multiplyScalar(believers * Math.randomBetween(0.4, 0.7));
+        this.chants[2] = new AdorationChant(idol, startPos.clone(), endPos.clone(), dur, del);
+
+        this.isChanting = false;
+
+        return this;
+    };
+
+    SacredRitual.prototype.StartLiturgy = function()
+    {
+        if (this.isChanting) { return; }
+        this.isChanting = true;
+
+        var self = this;
+
+        for (var i = 0; i < self.chants.length; i++)
+        {
+            self.chants[i].Inhale();
+        }
+
+        function Exhale()
+        {
+            var presentMoment = self.sacredConnection.gnomon.getDelta();
+            console.log(Date.now());
+
+            var isAllDone = true;
+            for (var i = 0; i < self.chants.length; i++)
+            {
+                if (self.chants[i].isDone) { continue; }
+
+                isAllDone = false;
+                self.chants[i].ShareTheLove(self.sacredConnection.materials[i], presentMoment);
+            }
+
+            if (!isAllDone)
+            {
+                self.sacredConnection.renderer.render(self.sacredConnection.scene, self.sacredConnection.camera);
+                requestAnimationFrame(Exhale);
+            }
+            else
+            {
+                self.isChanting = false;
+            }
+        }
+
+        self.sacredConnection.renderer.render(self.sacredConnection.scene, self.sacredConnection.camera);
+        requestAnimationFrame(Exhale);
+    };
+
+
+    var AdorationChant = function(obj, startPos, endPos, duration, delay)
+    {
+        this.obj      = obj;
+        this.startPos = startPos;
+        this.endPos   = endPos;
+        this.duration = duration;
+        this.delay    = delay;
+        this.spin     = new THREE.Vector3(0, Math.randomBetween(90, 150), 0);
+
+        this.spin.multiplyScalar(Math.PI / 180);
+        this.swingZ = Math.randomBetween(2.5, 3.2);
+        this.swingX = Math.randomBetween(0.6, 1);
+
+        this.elapsedTime  = 0;
+        this.elapsedDelay = 0;
+        this.speed       = this.endPos.clone().sub(this.startPos).divideScalar(this.duration);
+
+        this.obj.position.copy(this.startPos);
+
+        this.isDone = false;
+
+        return this;
+    };
+
+    AdorationChant.prototype.Inhale = function()
+    {
+        this.obj.position.copy(this.startPos);
+        this.obj.rotation = new THREE.Vector3(0, 0, 0);
+        this.elapsedTime  = 0;
+        this.elapsedDelay = 0;
+
+        this.isDone = false;
+    };
+
+    AdorationChant.prototype.ShareTheLove = function(ink, momentForYourself)
+    {
+        if (this.isDone || this.elapsedTime > this.duration)
+        {
+            this.isDone = true;
+            return;
+        }
+
+        if (this.elapsedDelay < this.delay)
+        {
+            this.elapsedDelay += momentForYourself;
+            return;
+        }
+
+        this.elapsedTime += momentForYourself;
+
+        if (this.elapsedTime < this.duration*0.2)
+        {
+            // appear on 0%-20% of animation interval
+            ink.opacity = Math.clamp(this.elapsedTime/(this.duration*0.2), 0, 1);
+        }
+        else if (this.elapsedTime > this.duration*0.8)
+        {
+            // disappear on 80%-100% of animation interval
+            ink.opacity = Math.clamp((this.duration - this.elapsedTime)/(this.duration*0.19), 0, 1);
+        }
+        else
+        {
+            // fully visible from 20% to 80% of animation
+            ink.opacity = 1;
+        }
+
+        this.obj.position.add(this.speed.clone().multiplyScalar(momentForYourself));
+
+        var swing = this.obj.rotation.toVector3();
+        swing.add(this.spin.clone().multiplyScalar(momentForYourself));
+        swing.z = Math.sin(this.elapsedTime * this.swingZ) * 0.05 * Math.PI;
+        swing.x = Math.sin(this.elapsedTime * this.swingX) * 0.02 * Math.PI;
+        this.obj.rotation.setFromVector3(swing);
+    };
+
+    // the real meat
+    var adoration = new AdoreMyBeautifulDeity();
+    adoration.PreyFirmamentForBlessing('heart.obj');
+
+    var button = document.querySelector('#start');
+    button.addEventListener('click', function()
+    {
+        if (adoration.IsReadyToBeGiven())
+        {
+            adoration.ritual.StartLiturgy();
+        }
+    })
+</script>
+</body>
+</html>
