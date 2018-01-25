@@ -268,30 +268,13 @@
     var adoration = new AdoreMyBeautifulDeity();
     adoration.PreyFirmamentForBlessing('heart.obj');
 
-
-    function receiver(e)
+    window.addEventListener('message', function(event)
     {
-        if (e.data == "adoration")
+        if (event.data == "adoration")
         {
             adoration.ritual.StartLiturgy();
         }
-        // if (e.origin == 'https://naughtyfaun.github.io')
-        // {
-        //     console.log("domain message");
-        //     console.log();
-        // }
-        // else
-        // {
-        //     console.log("NOT domain message");
-        //     console.log(e.data);
-        // }
-
-        // e.source.postMessage("hi there yourself!  the secret response " +
-        //                    "is: rheeeeet!",
-        //                    e.origin);
-    }
-    window.addEventListener('message', receiver, false);
-
+    }, false);
 </script>
 </body>
 </html>
