@@ -266,13 +266,13 @@
     };
 
     // the real meat
-    window.adoration = new AdoreMyBeautifulDeity();
-    window.adoration.PreyFirmamentForBlessing('heart.obj');
+    var adoration = new AdoreMyBeautifulDeity();
+    adoration.PreyFirmamentForBlessing('heart.obj');
 
 
     function receiver(e)
     {
-        window.adoration.StartLiturgy();
+        adoration.ritual.StartLiturgy();
         if (e.origin == 'https://naughtyfaun.github.io')
         {
             console.log("domain message");
