@@ -272,21 +272,24 @@
 
     function receiver(e)
     {
-        adoration.ritual.StartLiturgy();
-        if (e.origin == 'https://naughtyfaun.github.io')
+        if (e.data == "adoration")
         {
-            console.log("domain message");
-            console.log(e.data);
+            adoration.ritual.StartLiturgy();
         }
-        else
-        {
-            console.log("NOT domain message");
-            console.log(e.data);
-        }
+        // if (e.origin == 'https://naughtyfaun.github.io')
+        // {
+        //     console.log("domain message");
+        //     console.log();
+        // }
+        // else
+        // {
+        //     console.log("NOT domain message");
+        //     console.log(e.data);
+        // }
 
-        e.source.postMessage("hi there yourself!  the secret response " +
-                           "is: rheeeeet!",
-                           e.origin);
+        // e.source.postMessage("hi there yourself!  the secret response " +
+        //                    "is: rheeeeet!",
+        //                    e.origin);
     }
     window.addEventListener('message', receiver, false);
 
