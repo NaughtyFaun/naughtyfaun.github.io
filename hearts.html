@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>3D</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.js"></script>
     <script type="text/javascript" language="javascript" src="OBJLoader.js"></script>
     <style type="text/css">
@@ -29,7 +30,7 @@
         const NEAR = 0.1;
         const FAR = 1000;
 
-        var container = document.querySelector('#container');
+        var container = $('#container');
 
         self.renderer = new THREE.WebGLRenderer({alpha: true});
 
@@ -38,7 +39,7 @@
         self.scene.add(self.camera);
 
         self.renderer.setSize(WIDTH, HEIGHT);
-        container.appendChild(self.renderer.domElement);
+        container.append(self.renderer.domElement);
 
         // create a point light
         var pointLight = new THREE.PointLight(0xFFFFFF);
@@ -267,6 +268,22 @@
     // the real meat
     window.adoration = new AdoreMyBeautifulDeity();
     window.adoration.PreyFirmamentForBlessing('heart.obj');
+
+    window.addEventListener('message', receiver, false);
+    function receiver(e)
+    {
+        if (e.origin == 'naughtyfaun.github.io')
+        {
+            console.log("domain message");
+            console.log(e.data);
+        }
+        else
+        {
+            console.log("NOT domain message");
+            console.log(e.data);
+        }
+    }
+
 </script>
 </body>
 </html>
