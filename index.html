@@ -116,8 +116,6 @@
 
         this.chants = [];
 
-        this.lithurgyDuration = 2;
-
         var idol = this.sacredConnection.altar[0];
 
         // scale
@@ -145,11 +143,16 @@
         idol.scale.multiplyScalar(believers * Math.randomBetween(0.4, 0.7));
         this.chants[2] = new AdorationChant(idol, startPos.clone(), endPos.clone(), dur, del);
 
+        this.isChanting = false;
+
         return this;
     };
 
     SacredRitual.prototype.StartLiturgy = function()
     {
+        if (this.isChanting) { return; }
+        this.isChanting = true;
+
         var self = this;
 
         for (var i = 0; i < self.chants.length; i++)
@@ -160,13 +163,26 @@
         function Exhale()
         {
             var presentMoment = self.sacredConnection.gnomon.getDelta();
+            console.log(Date.now());
+
+            var isAllDone = true;
             for (var i = 0; i < self.chants.length; i++)
             {
+                if (self.chants[i].isDone) { continue; }
+
+                isAllDone = false;
                 self.chants[i].ShareTheLove(self.sacredConnection.materials[i], presentMoment);
             }
 
-            self.sacredConnection.renderer.render(self.sacredConnection.scene, self.sacredConnection.camera);
-            requestAnimationFrame(Exhale);
+            if (!isAllDone)
+            {
+                self.sacredConnection.renderer.render(self.sacredConnection.scene, self.sacredConnection.camera);
+                requestAnimationFrame(Exhale);
+            }
+            else
+            {
+                self.isChanting = false;
+            }
         }
 
         self.sacredConnection.renderer.render(self.sacredConnection.scene, self.sacredConnection.camera);
@@ -193,6 +209,8 @@
 
         this.obj.position.copy(this.startPos);
 
+        this.isDone = false;
+
         return this;
     };
 
@@ -200,13 +218,17 @@
     {
         this.obj.position.copy(this.startPos);
         this.obj.rotation = new THREE.Vector3(0, 0, 0);
-        this.elapsedTime = 0;
+        this.elapsedTime  = 0;
+        this.elapsedDelay = 0;
+
+        this.isDone = false;
     };
 
     AdorationChant.prototype.ShareTheLove = function(ink, momentForYourself)
     {
-        if (this.elapsedTime > this.duration)
+        if (this.isDone || this.elapsedTime > this.duration)
         {
+            this.isDone = true;
             return;
         }
 
