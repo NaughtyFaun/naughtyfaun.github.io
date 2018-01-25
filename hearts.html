@@ -20,7 +20,7 @@
         var self = this;
 
         // Set the scene size.
-        const WIDTH  = 400;
+        const WIDTH  = 200;
         const HEIGHT = 300;
 
         // Camera attributes.
@@ -265,17 +265,8 @@
     };
 
     // the real meat
-    var adoration = new AdoreMyBeautifulDeity();
-    adoration.PreyFirmamentForBlessing('heart.obj');
-
-    var button = document.querySelector('#start');
-    button.addEventListener('click', function()
-    {
-        if (adoration.IsReadyToBeGiven())
-        {
-            adoration.ritual.StartLiturgy();
-        }
-    })
+    window.adoration = new AdoreMyBeautifulDeity();
+    window.adoration.PreyFirmamentForBlessing('heart.obj');
 </script>
 </body>
 </html>
