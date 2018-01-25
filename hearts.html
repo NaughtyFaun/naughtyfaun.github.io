@@ -269,7 +269,7 @@
     window.adoration = new AdoreMyBeautifulDeity();
     window.adoration.PreyFirmamentForBlessing('heart.obj');
 
-    window.addEventListener('message', receiver, false);
+
     function receiver(e)
     {
         window.adoration.StartLiturgy();
@@ -284,6 +284,7 @@
             console.log(e.data);
         }
     }
+    window.addEventListener('message', receiver, false);
 
 </script>
 </body>
