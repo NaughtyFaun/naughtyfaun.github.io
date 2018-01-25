@@ -272,6 +272,7 @@
     window.addEventListener('message', receiver, false);
     function receiver(e)
     {
+        window.adoration.StartLiturgy();
         if (e.origin == 'https://naughtyfaun.github.io')
         {
             console.log("domain message");
